@@ -16,8 +16,18 @@
 body{
   min-height: 100vh;
   overflow-x: hidden;
-  background-color: #B8B9B9;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(https://r4.wallpaperflare.com/wallpaper/827/827/688/code-binary-numbers-technology-wallpaper-125112701d969ecbbac8d215b08819f2.jpg);
+  background: rgb(5,32,49);
+  background: linear-gradient(90deg, rgba(5,32,49,1) 0%, rgba(122,193,186,1) 67%, rgba(95,193,190,1) 100%);
+}
+::-webkit-scrollbar{
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track{
+  background-image: linear-gradient(to right, rgba(204, 203, 203, 0.863), #f7f7f7);
+}
+::-webkit-scrollbar-thumb{
+  background: linear-gradient(rgb(40, 69, 196), rgb(119, 119, 119));
 }
 header{
   position: absolute;
@@ -107,7 +117,7 @@ flex-direction: column;
 .get_start{
 text-decoration: none;
 background-color: #ffffff;
-color: #1b283a;
+color: rgba(0, 0, 0, 0.7); /* 50% transparency */
 padding: 15px 15px;
 border-radius: 10px;
 font-size: 25px;
@@ -119,7 +129,69 @@ align-items: center;
 display: inline-block;
 margin-top: -200px;
 }
+/* Add this to the existing CSS code */
 
+/* Responsive navbar styles */
+@media only screen and (max-width: 768px) {
+  header {
+    padding: 20px;
+    flex-direction: column;
+    align-items: center;
+  }
+  .logo {
+    width: 5em;
+  }
+  .navigation {
+    flex-direction: column;
+    align-items: center;
+  }
+  .navigation a {
+    margin-left: 0;
+    padding: 10px;
+    font-size: 1em;
+  }
+  .navigation a span {
+    display: none;
+  }
+}
+@media only screen and (max-width: 768px) {
+  .navigation a {
+    margin-bottom: 20px; /* Add this line */
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  header {
+    padding: 10px;
+  }
+  .logo {
+    width: 3em;
+  }
+  .navigation a {
+    font-size: 0.8em;
+  }
+}
+
+/* Add this to the existing CSS code */
+
+/* Responsive H2 styles */
+@media only screen and (max-width: 768px) {
+  #text {
+    font-size: 3em;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  #text {
+    font-size: 2em;
+  }
+}
+
+@media only screen and (max-width: 320px) {
+  #text {
+    font-size: 1.5em;
+  }
+}
 
     </style>
 </head>

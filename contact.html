@@ -19,8 +19,19 @@ body{
   justify-content: center;
   display: flex;
   overflow-x: hidden;
-  background-color: #B8B9B9;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(https://r4.wallpaperflare.com/wallpaper/827/827/688/code-binary-numbers-technology-wallpaper-125112701d969ecbbac8d215b08819f2.jpg);
+  background: rgb(5,32,49);
+  background: linear-gradient(90deg, rgba(5,32,49,1) 0%, rgba(122,193,186,1) 67%, rgba(95,193,190,1) 100%);
+}
+
+::-webkit-scrollbar{
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track{
+  background-image: linear-gradient(to right, rgba(204, 203, 203, 0.863), #f7f7f7);
+}
+::-webkit-scrollbar-thumb{
+  background: linear-gradient(rgb(40, 69, 196), rgb(119, 119, 119));
 }
 header{
   position: absolute;
@@ -46,6 +57,7 @@ header{
   margin-left: 20px;
   padding: 6px 15px;
   transition: .5s;
+  
 }
 .navigation a:hover,
 .navigation a.active{
@@ -147,7 +159,47 @@ form button {
   margin-bottom: 20px;
   transition: .5s;
 }
+/* Add this to the existing CSS code */
 
+/* Responsive navbar styles */
+@media only screen and (max-width: 768px) {
+  header {
+    padding: 20px;
+    flex-direction: column;
+    align-items: center;
+  }
+  .logo {
+    width: 5em;
+  }
+  .navigation {
+    flex-direction: column;
+    align-items: center;
+  }
+  .navigation a {
+    margin-left: 0;
+    padding: 10px;
+    font-size: 1em;
+  }
+  .navigation a span {
+    display: none;
+  }
+}
+@media only screen and (max-width: 768px) {
+  .navigation a {
+    margin-bottom: 20px; /* Add this line */
+  }
+}
+@media only screen and (max-width: 480px) {
+  header {
+    padding: 10px;
+  }
+  .logo {
+    width: 3em;
+  }
+  .navigation a {
+    font-size: 0.8em;
+  }
+}
 
 
     </style>
@@ -171,26 +223,21 @@ form button {
       <div class="input-box">
         <div class="input-field field">
           <input type="text" placeholder="Full Name" id="name" class="item" autocomplete="off" required>
-          <div class="error-text">Full Name can't be blank</div>
         </div>
         <div class="input-field field">
           <input type="email" placeholder="Email id" id="email" class="item" autocomplete="off" required>
-          <div class="error-text">Email Address can't be blank</div>
         </div>
       </div>
       <div class="input-box">
         <div class="input-field field">
           <input type="text" placeholder="Phone Number" id="phone" class="item" autocomplete="off" required>
-          <div class="error-text">Phone Number can't be blank</div>
         </div>
         <div class="input-field field">
           <input type="text" placeholder="Subject" id="subject" class="item" autocomplete="off" required>
-          <div class="error-text">Subject can't be blank</div>
         </div>
       </div>
       <div class="textarea-field field">
         <textarea name="" id="message" cols="30" rows="10" placeholder="Your Message" class="item" autocomplete="off"></textarea>
-        <div class="error-text">Message can't be blank</div>
       </div>
       <button type="submit">Send Message</button>      
     </form>
@@ -209,31 +256,45 @@ form button {
     const subject = document.getElementById("subject");
     const mess = document.getElementById("message");
     function sendEmail() {
-      const bodyMessage = `Full Name: ${fullname.value}<br> Email: ${email.value}<br> Phone Number: ${phone.value}<br> Message: ${mess.value}`;
-      Email.send({
-    SecureToken : "b6267017-f6d2-4a1a-ae86-1f73344c118e",    
-    Host : "smtp.elasticemail.com",
-    Username : "promentor97@gmail.com",
-    Password : "31DFDA2F60159C768AB94FAC277A058AE523",
-    To : 'promentor97@gmail.com',
-    From : "promentor97@gmail.com",
-    Subject : subject.value,
-    Body : bodyMessage
-}).then(
-  message => {
-    if (message == "OK"){
+  const bodyMessage = `Full Name: ${fullname.value}<br> Email: ${email.value}<br> Phone Number: ${phone.value}<br> Message: ${mess.value}`;
+  Email.send({
+    SecureToken: "b6267017-f6d2-4a1a-ae86-1f73344c118e",
+    Host: "smtp.elasticemail.com",
+    Username: "promentor97@gmail.com",
+    Password: "C5489514B472DCC04616864F557194D0CDD9",
+    To: 'promentor97@gmail.com',
+    From: "promentor97@gmail.com",
+    Subject: subject.value,
+    Body: bodyMessage
+  }).then(
+    message => {
+      if (message == "OK") {
+        console.log("Email sent successfully!");
+        Swal.fire({
+          title: "Success!",
+          text: "Your Message has been sent successfully",
+          icon: "success"
+        });
+      } else {
+        console.error("Error sending email:", message);
+        Swal.fire({
+          title: "Error!",
+          text: "Failed to send email",
+          icon: "error"
+        });
+      }
+    }
+  ).catch(
+    error => {
+      console.error("Error sending email:", error);
       Swal.fire({
-  title: "Success!",
-  text: "Your Message has been sent successfully",
-  icon: "success"
-});
-      
-
+        title: "Error!",
+        text: "Failed to send email",
+        icon: "error"
+      });
     }
-  }
-);
-    }
-
+  );
+}
 form.addEventListener("submit", (e) => {
   e.preventDefault(); 
   sendEmail();
