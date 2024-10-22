@@ -248,7 +248,7 @@ span{
 </head>
 <body>
     <header>
-  <img src="promentor.png" class="logo">
+  <img src="pm2.png" class="logo">
         <nav class="navigation">
             <a href="index.html" class="active">HOME<span></span></a>
             <a href="about.html">About<span></span></a>
@@ -268,17 +268,22 @@ span{
         </div>
         <p>Join us with</p>
         <div class="direct-sign">
-          <img src="https://img.icons8.com/ios-filled/50/FFFFFF/google-logo.png" alt="">
-          <img src="https://img.icons8.com/ios-filled/50/FFFFFF/mac-os.png" alt="">
-        </div>        
-        <form action="" id="login" class="input-group">
+          <button id="google-login" style="background: none; border: none; padding: 0;" onclick="googleLogin()">
+              <img src="https://img.icons8.com/ios-filled/50/FFFFFF/google-logo.png" alt="Google Logo">
+          </button>
+          <button id="apple-login" style="background: none; border: none; padding: 0;" onclick="appleLogin()">
+              <img src="https://img.icons8.com/ios-filled/50/FFFFFF/mac-os.png" alt="Apple Logo">
+          </button>
+      </div>
+           
+        <form onsubmit="loginUser(event)" id="login" class="input-group">
           <input type="text" class="input-field" placeholder="User Id" required>
           <input type="email" class="input-field" placeholder="Email Id" required>
           <input type="password" class="input-field" placeholder="Password" required>
           <input type="checkbox" class="check-box"><span>Remember Password</span>
           <button type="submit" class="submit-btn">Log In</button>
         </form>
-        <form action="" id="register" class="input-group">
+        <form onsubmit="registerUser(event)" id="register" class="input-group">
           <input type="text" class="input-field" placeholder="User Id" required>
           <input type="email" class="input-field" placeholder="Email Id" required>
           <input type="password" class="input-field" placeholder="Password" required>
@@ -296,142 +301,116 @@ span{
 
 
 
+   
 
 
+    <script type="module">
+      // Import Firebase modules
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+      import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, OAuthProvider } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+      import { getFirestore, setDoc, doc } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+          apiKey: "AIzaSyBq2t_d7f5WcmdVjKxDn110EY4PDCNg80k",
+          authDomain: "promentor-f4fd4.firebaseapp.com",
+          projectId: "promentor-f4fd4",
+          storageBucket: "promentor-f4fd4.appspot.com",
+          messagingSenderId: "338911129100",
+          appId: "1:338911129100:web:82ced0809c227cf587c829",
+          measurementId: "G-MQNKXLZC8G"
+      };
 
-<script>
- // Import the functions you need from the SDKs you need
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import { getFirestore, setDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getFirestore(app);
 
-// Your web app's Firebase configuration
-const firebaseConfig = {
-    apiKey: "AIzaSyBhiboEoHCmdG4eHdBeUacUY6EKDZMiGj0",
-    authDomain: "rankmaster-2007.firebaseapp.com",
-    projectId: "rankmaster-2007",
-    storageBucket: "rankmaster-2007.appspot.com",
-    messagingSenderId: "481619433177",
-    appId: "1:481619433177:web:5be2893aa094dbcc2b10c8",
-    measurementId: "G-NXE1T8RZ7H"
-};
+      // User registration
+      async function registerUser(event) {
+          event.preventDefault();
+          const userid = document.querySelector("#register .input-field:nth-child(1)").value;
+          const email = document.querySelector("#register .input-field:nth-child(2)").value;
+          const password = document.querySelector("#register .input-field:nth-child(3)").value;
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);  // Initialize Firebase Authentication
-const db = getFirestore(app); // Initialize Firestore
+          try {
+              const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+              const user = userCredential.user;
 
-// Function to handle user registration
-async function registerUser(event) {
-    event.preventDefault();  // Prevent the form from refreshing the page
+              await setDoc(doc(db, "users", user.uid), {
+                  userid: userid,
+                  email: email
+              });
 
-    const name = document.getElementById("reg-name").value;
-    const email = document.getElementById("reg-email").value;
-    const password = document.getElementById("reg-password").value;
-    const age = document.getElementById("reg-age").value;
+              window.location.href = "index.html";
+          } catch (error) {
+              alert(`Error: ${error.message}`);
+          }
+      }
 
-    try {
-        // Register the user in Firebase Authentication
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
+      // Google login
+      async function googleLogin() {
+          const provider = new GoogleAuthProvider();
+          try {
+              const result = await signInWithPopup(auth, provider);
+              const user = result.user;
+              console.log("User logged in with Google:", user.email);
+              window.location.href = "index.html";
+          } catch (error) {
+              alert(`Error: ${error.message}`);
+          }
+      }
 
-        console.log("User registered:", user.email);
+      // Apple login
+      async function appleLogin() {
+          const provider = new OAuthProvider('apple.com');
+          try {
+              const result = await signInWithPopup(auth, provider);
+              const user = result.user;
+              console.log("User logged in with Apple:", user.email);
+              window.location.href = "index.html";
+          } catch (error) {
+              alert(`Error: ${error.message}`);
+          }
+      }
 
-        // Save additional user data in Firestore
-        await setDoc(doc(db, "users", user.uid), {
-            name: name,
-            email: email,
-            age: age
-        });
+      // User login
+      async function loginUser(event) {
+          event.preventDefault();
+          const email = document.querySelector("#login .input-field:nth-child(2)").value;
+          const password = document.querySelector("#login .input-field:nth-child(3)").value;
 
-        // Display success message
-        document.getElementById("reg-message").innerText = "User registered successfully!";
-        document.getElementById("reg-message").style.color = "green";
-    } catch (error) {
-        console.error("Error registering user:", error);
-        document.getElementById("reg-message").innerText = error.message;
-        document.getElementById("reg-message").style.color = "red";
-    }
-}
+          try {
+              const userCredential = await signInWithEmailAndPassword(auth, email, password);
+              const user = userCredential.user;
+              console.log("User logged in:", user.email);
+              window.location.href = "index.html";
+          } catch (error) {
+              alert(`Error: ${error.message}`);
+          }
+      }
 
-// Function to handle user login
-async function loginUser(event) {
-    event.preventDefault();  // Prevent the form from refreshing the page
+      // Attach functions to the global scope
+      window.registerUser = registerUser;
+      window.loginUser = loginUser;
+      window.googleLogin = googleLogin;
+      window.appleLogin = appleLogin;
 
-    const email = document.getElementById("log-email").value;
-    const password = document.getElementById("log-password").value;
-
-    try {
-        // Sign in the user with email and password
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
-
-        console.log("User logged in:", user.email);
-
-        // Fetch additional user data from Firestore
-        const userDoc = await getDoc(doc(db, "users", user.uid));
-        if (userDoc.exists()) {
-            const userData = userDoc.data();
-            console.log("User data:", userData);
-
-            // Display user data
-            document.getElementById("userData").innerText = `Welcome, ${userData.name}! Your age is ${userData.age}.`;
-        } else {
-            console.log("No user data found in Firestore");
-            document.getElementById("userData").innerText = "No additional user data found.";
-        }
-
-        // Display success message
-        document.getElementById("log-message").innerText = "User logged in successfully!";
-        document.getElementById("log-message").style.color = "green";
-    } catch (error) {
-        console.error("Error logging in user:", error);
-        document.getElementById("log-message").innerText = error.message;
-        document.getElementById("log-message").style.color = "red";
-    }
-}
-
-// Attach the functions to the global scope
-window.registerUser = registerUser;
-window.loginUser = loginUser;
-
-</script>
-<script>
-  var x = document.getElementById("login");
-  var y = document.getElementById("register");
-  var z = document.getElementById("btn");
-  function register(){
-    x.style.left = "-400px";
-    y.style.left = "50px";
-    z.style.left = "110px";
-  }
-  function login(){
-    x.style.left = "50px";
-    y.style.left = "450px";
-    z.style.left = "0";
-  }
-</script>    
-<script>
-  // Disable right-click
-document.addEventListener('contextmenu', (e) => e.preventDefault());
-
-function ctrlShiftKey(e, keyCode) {
-  return e.ctrlKey && e.shiftKey && e.keyCode === keyCode.charCodeAt(0);
-}
-
-document.onkeydown = (e) => {
-  // Disable F12, Ctrl + Shift + I, Ctrl + Shift + J, Ctrl + U
-  if (
-    event.keyCode === 123 ||
-    ctrlShiftKey(e, 'I') ||
-    ctrlShiftKey(e, 'J') ||
-    ctrlShiftKey(e, 'C') ||
-    (e.ctrlKey && e.keyCode === 'U'.charCodeAt(0))
-  )
-    return false;
-};
-</script>
-
+  </script>
+  <script>
+      var x = document.getElementById("login");
+      var y = document.getElementById("register");
+      var z = document.getElementById("btn");
+      function register(){
+          x.style.left = "-400px";
+          y.style.left = "50px";
+          z.style.left = "110px";
+      }
+      function login(){
+          x.style.left = "50px";
+          y.style.left = "450px";
+          z.style.left = "0";
+      }
+  </script>
 </body>
 </html>
