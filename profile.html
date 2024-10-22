@@ -82,58 +82,7 @@ header{
   opacity: 1;
 }
 
-.parallax{
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 75vh;
-  background: url(background.png) no-repeat;
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  opacity: 0;
-  transform: translateY(50px);
-  animation: floatIn 1s forwards;
-}
-@keyframes floatIn {
-  0% {
-    opacity: 0;
-    transform: translateY(50px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-#text{
-  position: absolute;
-  font-size: 5em;
-  color: #ffffff;
-  text-shadow: 2px 4px 5px #1b283a;
-}
-.start {
-display: flex;
-justify-content: center;
-align-items: center;
-flex-direction: column;
-}
 
-.get_start{
-text-decoration: none;
-background-color: #ffffff;
-color: rgba(0, 0, 0, 0.7); /* 50% transparency */
-padding: 15px 15px;
-border-radius: 10px;
-font-size: 25px;
-font-family: Copperplate Gothic;
-font-weight: 700;
-position: relative;
-justify-content: space-between;
-align-items: center;
-display: inline-block;
-margin-top: -200px;
-}
 /* Add this to the existing CSS code */
 
 /* Responsive navbar styles */
@@ -177,26 +126,7 @@ margin-top: -200px;
   }
 }
 
-/* Add this to the existing CSS code */
 
-/* Responsive H2 styles */
-@media only screen and (max-width: 768px) {
-  #text {
-    font-size: 3em;
-  }
-}
-
-@media only screen and (max-width: 480px) {
-  #text {
-    font-size: 2em;
-  }
-}
-
-@media only screen and (max-width: 320px) {
-  #text {
-    font-size: 1.5em;
-  }
-}
 
     </style>
 </head>
@@ -214,39 +144,11 @@ margin-top: -200px;
           <a href="profile.html"><i class="fa-regular fa-user"></i></a>
       </nav>
   </header>
-    <div class="login">
-    <section class="parallax">
-        <h2 id="text">Work with your Ideal</h2>
-      </section>
-      <div class="start">
-
-      <a href="login.html" class="get_start">Get Started</a>
-    </div>
-</div>
 
 
 
 
-<script>
-  // Disable right-click
-document.addEventListener('contextmenu', (e) => e.preventDefault());
 
-function ctrlShiftKey(e, keyCode) {
-  return e.ctrlKey && e.shiftKey && e.keyCode === keyCode.charCodeAt(0);
-}
-
-document.onkeydown = (e) => {
-  // Disable F12, Ctrl + Shift + I, Ctrl + Shift + J, Ctrl + U
-  if (
-    event.keyCode === 123 ||
-    ctrlShiftKey(e, 'I') ||
-    ctrlShiftKey(e, 'J') ||
-    ctrlShiftKey(e, 'C') ||
-    (e.ctrlKey && e.keyCode === 'U'.charCodeAt(0))
-  )
-    return false;
-};
-</script>
 
 
 
