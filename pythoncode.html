@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Code Editor with Brython</title>
+    <!-- Load Brython from CDN -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3.9.5/brython.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #codeEditor {
+            width: 100%;
+            height: 300px;
+            font-family: monospace;
+            font-size: 16px;
+            background-color: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ccc;
+            margin-top: 20px;
+        }
+        #output {
+            margin-top: 20px;
+            white-space: pre-wrap; /* Preserve newlines */
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body onload="brython()">
+
+    <h1>Python Code Editor with Brython</h1>
+
+    <textarea id="codeEditor" placeholder="Write your Python code here...">print('Hello, World!')</textarea>
+    <button id="runCodeButton">Run Code</button>
+
+    <h3>Output:</h3>
+    <div id="output"></div>
+
+    <!-- Brython Python Script -->
+    <script type="text/python">
+        from browser import document
+        import sys
+        from io import StringIO
+
+        def runCode(event):
+            code = document["codeEditor"].value
+            output_div = document["output"]
+            output_div.text = ''  # Clear previous output
+
+            # Redirect stdout to capture print statements
+            buffer = StringIO()
+            sys.stdout = buffer
+
+            try:
+                exec(code)  # Execute the Python code
+            except Exception as e:
+                output_div.text = f"Error: {e}"
+
+            # Restore stdout and display output
+            sys.stdout = sys.__stdout__
+            output_div.text += buffer.getvalue()  # Append captured output
+
+        # Bind the button click to the runCode function
+        document["runCodeButton"].bind("click", runCode)
+    </script>
+</body>
+</html>

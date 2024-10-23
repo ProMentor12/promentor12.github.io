@@ -97,11 +97,8 @@ header{
   margin-top: 130px;
   border-radius: 30px;
   opacity: .9;
-  overflow: hidden;
   backdrop-filter: blur(20px);
-
-
-
+  overflow: hidden;
 }
 .button-box{
   width: 220px;
@@ -250,7 +247,7 @@ span{
     <header>
   <img src="pm2.png" class="logo">
         <nav class="navigation">
-            <a href="index.html" class="active">HOME<span></span></a>
+            <a href="index1.html" class="active">HOME<span></span></a>
             <a href="about.html">About<span></span></a>
             <a href="project.html">Projects<span></span></a>
             <a href="resource.html">Resources<span></span></a>
@@ -281,14 +278,12 @@ span{
           <input type="text" class="input-field" placeholder="User Id" required>
           <input type="email" class="input-field" placeholder="Email Id" required>
           <input type="password" class="input-field" placeholder="Password" required>
-          <input type="checkbox" class="check-box"><span>Remember Password</span>
           <button type="submit" class="submit-btn">Log In</button>
         </form>
         <form onsubmit="registerUser(event)" id="register" class="input-group">
           <input type="text" class="input-field" placeholder="User Id" required>
           <input type="email" class="input-field" placeholder="Email Id" required>
           <input type="password" class="input-field" placeholder="Password" required>
-          <input type="checkbox" class="check-box"><span>Keep me logged in</span>
           <button type="submit" class="submit-btn">Register</button>
         </form>
       </div>
@@ -343,7 +338,7 @@ span{
                   email: email
               });
 
-              window.location.href = "index.html";
+              window.location.href = "about.html";
           } catch (error) {
               alert(`Error: ${error.message}`);
           }

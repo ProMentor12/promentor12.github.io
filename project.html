@@ -1,166 +1,165 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <script src="https://kit.fontawesome.com/5702639677.js"></script>
-        <title>Promentor</title>
-    
-        <style media="screen">
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
-    
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
-    }
-    body{
-      min-height: 100vh;
-      overflow-x: hidden;
-      background: rgb(5,32,49);
-      background: linear-gradient(90deg, rgba(5,32,49,1) 0%, rgba(122,193,186,1) 67%, rgba(95,193,190,1) 100%);
-    }
-    ::-webkit-scrollbar{
-      width: 6px;
-      height: 6px;
-    }
-    ::-webkit-scrollbar-track{
-      background-image: linear-gradient(to right, rgba(204, 203, 203, 0.863), #f7f7f7);
-    }
-    ::-webkit-scrollbar-thumb{
-      background: linear-gradient(rgb(40, 69, 196), rgb(119, 119, 119));
-    }
-    ::-webkit-scrollbar-thumb:hover{
-      background: linear-gradient(rgb(88, 111, 212), rgb(165, 164, 164));
-    }        
-    header{
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      padding: 30px 100px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      z-index: 100;
-      margin-top: -20px;  
-    }
-    .logo{
-      width: 8em;
-    
-    }
-    .navigation a {
-      position: relative;
-      font-size: 1.1em;
-      color: #fff;
-      font-weight: 600;
-      text-decoration: none;
-      margin-left: 20px;
-      padding: 6px 15px;
-      transition: .5s;
-    }
-    .navigation a:hover,
-    .navigation a.active{
-      color: #333;
-    }
-    .navigation a span {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: #fff;
-      border-radius: 30px;
-      z-index: -1;
-      transform: scale(0);
-      opacity: 0;
-      transition: .5s;
-    }
-    .navigation a:hover span,
-    .navigation a.active span{
-      transform: scale(1);
-      opacity: 1;
-    }
-    
-    h2{
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://kit.fontawesome.com/5702639677.js"></script>
+    <title>Promentor Projects</title>
+
+    <style media="screen">
+      @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+      }
+      body {
+        min-height: 100vh;
+        overflow-x: hidden;
+        background: rgb(5, 32, 49);
+        background: linear-gradient(90deg, rgba(5, 32, 49, 1) 0%, rgba(122, 193, 186, 1) 67%, rgba(95, 193, 190, 1) 100%);
+      }
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background-image: linear-gradient(to right, rgba(204, 203, 203, 0.863), #f7f7f7);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: linear-gradient(rgb(40, 69, 196), rgb(119, 119, 119));
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(rgb(88, 111, 212), rgb(165, 164, 164));
+      }
+      header {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        padding: 30px 100px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 100;
+        margin-top: -20px;
+      }
+      .logo {
+        width: 8em;
+      }
+      .navigation a {
+        position: relative;
+        font-size: 1.1em;
+        color: #fff;
+        font-weight: 600;
+        text-decoration: none;
+        margin-left: 20px;
+        padding: 6px 15px;
+        transition: 0.5s;
+      }
+      .navigation a:hover,
+      .navigation a.active {
+        color: #333;
+      }
+      .navigation a span {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #fff;
+        border-radius: 30px;
+        z-index: -1;
+        transform: scale(0);
+        opacity: 0;
+        transition: 0.5s;
+      }
+      .navigation a:hover span,
+      .navigation a.active span {
+        transform: scale(1);
+        opacity: 1;
+      }
+
+      h2 {
         font-size: 3em;
-            margin-top: 110px;
-            color: #ffffff;
-            text-shadow: 2px 4px 5px #1b283a;
-            position: relative  ;
-            text-align: center;
-}
+        margin-top: 110px;
+        color: #ffffff;
+        text-shadow: 2px 4px 5px #1b283a;
+        position: relative;
+        text-align: center;
+      }
 
-        .project-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
-            padding: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+      .project-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+        padding: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
 
+      .project-card {
+        background-image: linear-gradient(rgba(150, 150, 150, 0.295), rgba(150, 150, 150, 0.295));
+        background-position: center;
+        background-repeat: no-repeat;
+        box-shadow: 1px 1px 10px rgba(1, 1, 1, 0.4);
+        border-radius: 10px;
+        width: 300px;
+        padding: 20px;
+        text-align: center;
+        transition: transform 0.3s ease;
+      }
+
+      .project-card:hover {
+        transform: scale(1.05);
+      }
+
+      .project-title {
+        font-size: 1.5rem;
+        color: #ccc;
+        margin-bottom: 10px;
+      }
+
+      .project-description {
+        font-size: 0.9rem;
+        color: #ccc;
+        margin-bottom: 15px;
+      }
+
+      .project-details {
+        text-align: left;
+        font-size: 0.9rem;
+        margin-bottom: 10px;
+        color: #f7f7f7;
+      }
+
+      .project-details strong {
+        color: #ccc;
+      }
+
+      .view-btn {
+        background: linear-gradient(to right, rgb(40, 69, 196), rgb(119, 119, 119));
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        border-radius: 30px;
+        text-decoration: none;
+        display: inline-block;
+        margin-top: 10px;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
         .project-card {
-            background-image: linear-gradient(rgba(150, 150, 150, 0.295), rgba(150, 150, 150, 0.295));
-  background-position: center;
-  background-repeat: no-repeat;
-  box-shadow: 1px 1px 10px rgba(1, 1, 1, 0.4);           
-            border-radius: 10px;
-            width: 300px;
-            padding: 20px;
-            text-align: center;
-            transition: transform 0.3s ease;
+          width: 100%;
         }
+      }
 
-        .project-card:hover {
-            transform: scale(1.05);
-        }
-
-        .project-title {
-            font-size: 1.5rem;
-            color: #ccc;
-            margin-bottom: 10px;
-        }
-
-        .project-description {
-            font-size: 0.9rem;
-            color: #ccc;
-            margin-bottom: 15px;
-        }
-
-        .project-details {
-            text-align: left;
-            font-size: 0.9rem;
-            margin-bottom: 10px;
-            color: #f7f7f7;
-        }
-
-        .project-details strong {
-            color: #ccc;
-        }
-
-        .join-btn {
-            background: linear-gradient(to right, rgb(40, 69, 196), rgb(119, 119, 119));
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 30px;
-            text-decoration: none;
-            display: inline-block;
-            margin-top: 10px;
-        }
-
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .project-card {
-                width: 100%;
-            }
-        }
-        footer{
+      footer{
         width: 100%;
         position: absolute;
         bottom: 0;
@@ -275,150 +274,79 @@
 
     }
     }
-    @media only screen and (max-width: 768px) {
-  header {
-    padding: 20px;
-    flex-direction: column;
-    align-items: center;
-  }
-  .logo {
-    width: 5em;
-  }
-  .navigation {
-    flex-direction: column;
-    align-items: center;
-  }
-  .navigation a {
-    margin-left: 0;
-    padding: 10px;
-    font-size: 1em;
-  }
-  .navigation a span {
-    display: none;
-  }
-}
-@media only screen and (max-width: 768px) {
-  .navigation a {
-    margin-bottom: 20px; /* Add this line */
-  }
-}
 
-@media only screen and (max-width: 480px) {
-  header {
-    padding: 10px;
-  }
-  .logo {
-    width: 3em;
-  }
-  .navigation a {
-    font-size: 0.8em;
-  }
-}
+      @media (max-width: 768px) {
+        .footer-content {
+          flex-direction: column;
+          text-align: center;
+        }
+        .footer-links {
+          justify-content: center;
+          margin-bottom: 10px;
+        }
+      }
     </style>
-</head>
-<body>
+  </head>
+
+  <body>
     <header>
-        <img src="pm2.png" class="logo">
-              <nav class="navigation">
-                  <a href="index.html" class="active">HOME<span></span></a>
-                  <a href="about.html">About<span></span></a>
-                  <a href="project.html">Projects<span></span></a>
-                  <a href="resource.html">Resources<span></span></a>
-                  <a href="workshop.html">Workshops<span></span></a>
-                  <a href="feedback.html">Feedback<span></span></a>
-                  <a href="contact.html">Contact Us<span></span></a>
-                  <a href="profile.html"><i class="fa-regular fa-user"></i></a>
-              </nav>
-          </header>
-    <h2>Promentor projects</h2>
+      <img src="pm2.png" class="logo" />
+      <nav class="navigation">
+        <a href="index1.html">HOME<span></span></a>
+        <a href="about.html">About<span></span></a>
+        <a href="project.html" class="active">Projects<span></span></a>
+        <a href="resource.html">Resources<span></span></a>
+        <a href="workshop.html">Workshops<span></span></a>
+        <a href="feedback.html">Feedback<span></span></a>
+        <a href="contact.html">Contact Us<span></span></a>
+        <a href="profile.html"><i class="fa-regular fa-user"></i></a>
+      </nav>
+    </header>
+
+    <h2>Promentor Projects</h2>
 
     <div class="project-container">
-        <!-- project 1 -->
-        <div class="project-card">
-            <div class="project-title">Intro to Python Programming</div>
-            <div class="project-description">A beginner-level project covering Python programming basics, including variables, loops, and functions.</div>
-            <div class="project-details">
-                <strong>Duration:</strong> 2 hours<br>
-                <strong>Audience:</strong> Junior students<br>
-                <strong>Format:</strong> Live coding demo <br>
-                <strong>Schedule:</strong> 9:30 AM to 11:30 AM
-            </div>
+      <!-- Project 1 -->
+      <div class="project-card">
+        <div class="project-title">Student Management System</div>
+        <div class="project-description">
+          A web-based application to manage student records, grades, and assignments efficiently.
         </div>
-
-        <!-- project 2 -->
-        <div class="project-card">
-            <div class="project-title">Web Development for Beginners</div>
-            <div class="project-description">Learn how to create a basic website using HTML, CSS, and JavaScript. Perfect for beginners.</div>
-            <div class="project-details">
-                <strong>Duration:</strong> 3 hours<br>
-                <strong>Audience:</strong> Junior students<br>
-                <strong>Format:</strong> Live step-by-step tutorial <br>
-                <strong>Schedule:</strong> 9:30 AM to 12:30 PM
-            </div>
+        <div class="project-details">
+          <strong>Technologies:</strong> HTML, CSS, JavaScript, PHP<br />
+          <strong>Team Members:</strong> 3<br />
+          <strong>Status:</strong> Ongoing
         </div>
+        <a href="https://github.com/ProMentor12/Student-Management-System" target="_blank" class="view-btn">View Project</a>
+      </div>
 
-        <!-- project 3 -->
-        <div class="project-card">
-            <div class="project-title">Problem-Solving with Algorithms</div>
-            <div class="project-description">Intermediate project focusing on algorithms and data structures like sorting, searching, and recursion.</div>
-            <div class="project-details">
-                <strong>Duration:</strong> 2.5 hours<br>
-                <strong>Audience:</strong> Intermediate students<br>
-                <strong>Format:</strong> Live problem-solving <br>
-                <strong>Schedule:</strong> 9:30 AM to 12:00 PM
-
-            </div>
+      <!-- Project 2 -->
+      <div class="project-card">
+        <div class="project-title">Portfolio <br> Website</div>
+        <div class="project-description">A responsive portfolio website for showcasing personal projects and skills.</div>
+        <div class="project-details">
+          <strong>Technologies:</strong> HTML, CSS, JavaScript<br />
+          <strong>Team Members:</strong> 1<br />
+          <strong>Status:</strong> Ongoing
         </div>
+        <a href="https://github.com/ProMentor12/Portfolio-Website" target="_blank" class="view-btn">View Project</a>
+      </div>
 
-        <!-- project 4 -->
-        <div class="project-card">
-            <div class="project-title">Intro to Game Development</div>
-            <div class="project-description">Build a simple 2D game using Unity. A beginner's project for students interested in game development.</div>
-            <div class="project-details">
-                <strong>Duration:</strong> 3 hours<br>
-                <strong>Audience:</strong> Junior students<br>
-                <strong>Format:</strong> Live game development tutorial <br>
-                <strong>Schedule:</strong> 9:30 AM to 12:30 PM
-
-            </div>
+      <!-- Project 3 -->
+      <div class="project-card">
+        <div class="project-title">Blog <br> CMS</div>
+        <div class="project-description">
+          A content management system (CMS) for managing and publishing blog posts.
         </div>
-
-        <!-- project 5 -->
-        <div class="project-card">
-            <div class="project-title">Building Interactive Websites</div>
-            <div class="project-description">Learn how to add interactivity to websites using JavaScript. Suitable for students with basic HTML/CSS knowledge.</div>
-            <div class="project-details">
-                <strong>Duration:</strong> 2 hours<br>
-                <strong>Audience:</strong> Junior students<br>
-                <strong>Format:</strong> Interactive live session <br>
-                <strong>Schedule:</strong> 9:30 AM to 11:30 AM
-            </div>
+        <div class="project-details">
+          <strong>Technologies:</strong> Python, Flask, SQLite<br />
+          <strong>Team Members:</strong> 2<br />
+          <strong>Status:</strong> Ongoing
         </div>
-
-        <!-- project 6 -->
-        <div class="project-card">
-            <div class="project-title">Introduction to Machine Learning</div>
-            <div class="project-description">An introductory project on machine learning using Python and Scikit-learn for beginners.</div>
-            <div class="project-details">
-                <strong>Duration:</strong> 2.5 hours<br>
-                <strong>Audience:</strong> Senior students teaching juniors<br>
-                <strong>Format:</strong> Live coding session <br>
-                <strong>Schedule:</strong> 9:30 AM to 12:00 PM
-            </div>
-        </div>
-
-        <!-- project 7 -->
-        <div class="project-card">
-            <div class="project-title">Version Control with Git and GitHub</div>
-            <div class="project-description">Learn how to use Git and GitHub for version control and collaboration in coding projects.</div>
-            <div class="project-details">
-                <strong>Duration:</strong> 1.5 hours<br>
-                <strong>Audience:</strong> Junior students<br>
-                <strong>Format:</strong> Live demonstration <br>
-                <strong>Schedule:</strong> 9:30 AM to 11:00 AM
-            </div>
-        </div>
+        <a href="https://github.com/ProMentor12/Blog-CMS" target="_blank" class="view-btn">View Project</a>
+      </div>
     </div>
+
     <footer>
         <div class="row">
                 <div class="col">
@@ -434,7 +362,7 @@
                 <div class="col">
                     <h3>Links <div class="underline"><span></span></div></h3>
                     <ul class="foot">
-                        <li><a href="index.html">Home</a></li>
+                        <li><a href="index1.html">Home</a></li>
                         <li><a href="about.html">About</a></li>
                         <li><a href="project.html">Projects</a></li>
                         <li><a href="feedback.html">Feedback</a></li>
@@ -455,26 +383,5 @@
         <hr class="copy">
         <p class="copyright">Promentor © 2024 - All  Right Reserved</p>
     </footer>
-    <script>
-        // Disable right-click
-      document.addEventListener('contextmenu', (e) => e.preventDefault());
-      
-      function ctrlShiftKey(e, keyCode) {
-        return e.ctrlKey && e.shiftKey && e.keyCode === keyCode.charCodeAt(0);
-      }
-      
-      document.onkeydown = (e) => {
-        // Disable F12, Ctrl + Shift + I, Ctrl + Shift + J, Ctrl + U
-        if (
-          event.keyCode === 123 ||
-          ctrlShiftKey(e, 'I') ||
-          ctrlShiftKey(e, 'J') ||
-          ctrlShiftKey(e, 'C') ||
-          (e.ctrlKey && e.keyCode === 'U'.charCodeAt(0))
-        )
-          return false;
-      };
-      </script>
-      
-</body>
+  </body>
 </html>
