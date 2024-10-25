@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://kit.fontawesome.com/5702639677.js"></script>
+  <title>Enhanced Paint App with Text Tool</title>
+  <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    body{
+      min-height: 100vh;
+      overflow-x: hidden;
+      background: rgb(5,32,49);
+      background: linear-gradient(90deg, rgba(5,32,49,1) 0%, rgba(122,193,186,1) 67%, rgba(95,193,190,1) 100%);
+    }
+    ::-webkit-scrollbar{
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track{
+      background-image: linear-gradient(to right, rgba(204, 203, 203, 0.863), #f7f7f7);
+    }
+    ::-webkit-scrollbar-thumb{
+      background: linear-gradient(rgb(40, 69, 196), rgb(119, 119, 119));
+    }
+    ::-webkit-scrollbar-thumb:hover{
+      background: linear-gradient(rgb(88, 111, 212), rgb(165, 164, 164));
+    }        
+    header{
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 30px 100px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+      margin-top: -20px;  
+    }
+    .logo{
+      width: 8em;
+    
+    }
+    .navigation a {
+      position: relative;
+      font-size: 1.1em;
+      color: #fff;
+      font-weight: 600;
+      text-decoration: none;
+      margin-left: 20px;
+      padding: 6px 15px;
+      transition: .5s;
+    }
+    .navigation a:hover,
+    .navigation a.active{
+      color: #333;
+    }
+    .navigation a span {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #fff;
+      border-radius: 30px;
+      z-index: -1;
+      transform: scale(0);
+      opacity: 0;
+      transition: .5s;
+    }
+    .navigation a:hover span,
+    .navigation a.active span{
+      transform: scale(1);
+      opacity: 1;
+    }
+    h1 {
+      font-size: 2.5em;
+          margin-top: 120px;
+          color: #ffffff;
+          text-shadow: 2px 4px 5px #1b283a;
+          position: relative  ;
+          text-align: center;
+          margin-bottom: 10px;
+    }
+
+    /* Toolbar styling */
+    .toolbar {
+      display: flex;
+      gap: 5px;
+      margin: 10px 0;
+      padding: 10px;
+      box-shadow: 1px 1px 10px rgba(1, 1, 1, 0.4);           
+      background-image: linear-gradient(rgba(150, 150, 150, 0.295), rgba(150, 150, 150, 0.295));
+      border-radius: 5px;
+      justify-content: center;
+    }
+
+    .toolbar button {
+      width: 40px;
+      height: 40px;
+      background-color: #e0e0e0;
+      border: 1px solid #ccc;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      transition: background-color 0.2s;
+      border-radius: 4px;
+    }
+
+    .toolbar button.active {
+      background-color: #4CAF50;
+      color: white;
+      border: 1px solid #4CAF50;
+    }
+
+    /* Canvas styling */
+    #paintCanvas {
+      border: 1px solid #000;
+      cursor: crosshair;
+      margin-top: 10px;
+      background: white;
+      justify-content: center;
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
+      margin-bottom: 30px;
+      
+    }
+
+    .controls {
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    /* Text Formatting Container */
+    #textFormatContainer {
+      margin-top: 10px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      background-color: #f9f9f9;
+      border-radius: 5px;
+      display: none; /* Hidden by default */
+    }
+    footer{
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+        background: rgba(5, 32, 49, 0);
+        background: linear-gradient(to bottom, rgb(5, 32, 49) 0%, rgb(19, 104, 96) 67%, rgb(16, 235, 228) 100%);
+        color: #fff;
+        padding: 40px 0px 5px;
+        border-top-left-radius: 50px;
+        border-bottom-right-radius: 50px;
+        font-size: 13px;
+        line-height: 20px;
+        position: relative;
+    }
+    .row{
+        width: 85%;
+        margin: auto;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        justify-content: space-between;
+    }
+    .col{
+        flex-basis: 25%;
+        padding: 10px;
+    }
+    .col:nth-child(2), .col:nth-child(3){
+        flex-basis: 15%;
+
+    }
+    .log{
+        width: 80px;
+        margin-bottom: 10px;
+    }
+    .col h3{
+        width: fit-content;
+        margin-bottom: 20px;
+        position: relative;
+    }
+    .email-id{
+        width: fit-content;
+        border-bottom: 1px solid #ccc;
+        margin: 20px 0px;
+    }
+    .foot li{
+        list-style: none;
+        margin-bottom: 2px;
+    }
+    .foot li a{
+        text-decoration: none;
+        color: #fff;
+    }
+
+    .social-icons .fa-brands{
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 40px;
+        font-size: 20px;
+        color: #000;
+        background: #fff;
+        margin-right: 15px;
+        cursor: pointer;
+        
+    }
+    .copy{
+        width: 90%;
+        border: 0;
+        border-bottom: 1px solid #ccc;
+        margin: 20px auto;
+    }
+    .copyright{
+        text-align: center;
+    }
+    .underline{
+        width: 100%;
+        height: 5px;
+        background: #767676;
+        border-radius: 3px;
+        position: absolute;
+        top: 25px;
+        left: 0;
+        overflow: hidden;
+    }
+    .underline span{
+        width: 25px;
+        height: 100%;
+        background: linear-gradient(to right, rgb(40, 69, 196), rgb(119, 119, 119));
+        border-radius: 3px;
+        position: absolute;
+        top: 0;
+        left: 10px;  
+        animation: moving 2s linear infinite;  
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="pm2.png" class="logo">
+          <nav class="navigation">
+              <a href="index1.html">HOME<span></span></a>
+              <a href="about.html">About<span></span></a>
+              <a href="project.html">Projects<span></span></a>
+              <a href="resource.html" class="active">Resources<span></span></a>
+              <a href="workshop.html">Workshops<span></span></a>
+              <a href="feedback.html">Feedback<span></span></a>
+              <a href="contact.html">Contact Us<span></span></a>
+              <a href="profile.html"><i class="fa-regular fa-user"></i></a>
+          </nav>
+      </header>
+  <h1>Paint</h1>
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <button id="toolPencil" class="tool-button active" title="Pencil">✏️</button>
+    <button id="toolEraser" class="tool-button" title="Eraser"><i class="fa-solid fa-eraser"></i></button>
+    <button id="toolFill" class="tool-button" title="Color Filler"><i class="fa-solid fa-fill-drip"></i></button>
+    <button id="toolRectangle" class="tool-button" title="Rectangle"><i class="fa-regular fa-square"></i></button>
+    <button id="toolCircle" class="tool-button" title="Circle"><i class="fa-regular fa-circle"></i></button>
+    <button id="toolLine" class="tool-button" title="Line"><i class="fa-solid fa-minus"></i></button>
+    <button id="toolText" class="tool-button" title="Text"><i class="fa-solid fa-font"></i></button> <!-- Text Tool Button -->
+  </div>
+
+  <!-- Text Formatting Container -->
+  <div id="textFormatContainer">
+    <label for="fontSize">Font Size:</label>
+    <select id="fontSize">
+      <option value="16">16</option>
+      <option value="20">20</option>
+      <option value="24">24</option>
+      <option value="28">28</option>
+      <option value="32">32</option>
+    </select>
+
+    <label for="fontFamily">Font Family:</label>
+    <select id="fontFamily">
+      <option value="Arial">Arial</option>
+      <option value="Courier New">Courier New</option>
+      <option value="Georgia">Georgia</option>
+      <option value="Times New Roman">Times New Roman</option>
+      <option value="Verdana">Verdana</option>
+    </select>
+
+    <label>
+      <input type="checkbox" id="bold"> Bold
+    </label>
+    <label>
+      <input type="checkbox" id="italic"> Italic
+    </label>
+    <label>
+      <input type="checkbox" id="underline"> Underline
+    </label>
+    <label>
+      <input type="checkbox" id="strikethrough"> Strikethrough
+    </label>
+
+    <button id="confirmText">Confirm</button>
+  </div>
+  
+  <div class="controls">
+    <label for="colorPicker">Brush Color:</label>
+    <input type="color" id="colorPicker" value="#000000">
+    
+    <label for="brushSize">Brush Size:</label>
+    <input type="range" id="brushSize" min="1" max="20" value="5">
+    
+    <button id="clearButton">Clear Canvas</button>
+  </div>
+  
+  <canvas id="paintCanvas" width="800" height="500"></canvas>
+  
+  <script>
+    const canvas = document.getElementById('paintCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let painting = false;
+    let startX, startY;
+    let tool = 'pencil';
+    let brushColor = document.getElementById('colorPicker').value;
+    let brushSize = document.getElementById('brushSize').value;
+
+    // Store the drawn objects
+    const drawings = [];
+
+    // Text formatting options
+    let textOptions = {
+      size: '16',
+      family: 'Arial',
+      bold: false,
+      italic: false,
+      underline: false,
+      strikethrough: false,
+    };
+
+    // Tool Button Elements
+    const toolButtons = {
+      pencil: document.getElementById('toolPencil'),
+      eraser: document.getElementById('toolEraser'),
+      fill: document.getElementById('toolFill'),
+      rectangle: document.getElementById('toolRectangle'),
+      circle: document.getElementById('toolCircle'),
+      line: document.getElementById('toolLine'),
+      text: document.getElementById('toolText')
+    };
+
+    function activateTool(selectedTool) {
+      // Remove 'active' class from all tool buttons
+      Object.values(toolButtons).forEach(button => button.classList.remove('active'));
+      // Add 'active' class to the selected tool button
+      toolButtons[selectedTool].classList.add('active');
+      tool = selectedTool;
+
+      if (tool === 'text') {
+        document.getElementById('textFormatContainer').style.display = 'block'; // Show the container
+      } else {
+        document.getElementById('textFormatContainer').style.display = 'none'; // Hide it for other tools
+      }
+    }
+
+    // Tool functions
+    function startDrawing(e) {
+      painting = true;
+      startX = e.clientX - canvas.offsetLeft;
+      startY = e.clientY - canvas.offsetTop;
+
+      if (tool === 'fill') {
+        fillCanvas();
+      }
+    }
+
+    function stopDrawing() {
+      if (painting && (tool === 'rectangle' || tool === 'circle' || tool === 'line')) {
+        saveShape();
+      }
+      painting = false;
+      ctx.beginPath();
+    }
+
+    function draw(e) {
+      if (!painting) return;
+
+      ctx.lineWidth = brushSize;
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = tool === 'eraser' ? '#FFFFFF' : brushColor;
+
+      ctx.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+      
+      // Save the pencil or eraser stroke
+      drawings.push({
+        tool: tool,
+        color: ctx.strokeStyle,
+        size: ctx.lineWidth,
+        startX: e.clientX - canvas.offsetLeft,
+        startY: e.clientY - canvas.offsetTop
+      });
+    }
+
+    function fillCanvas() {
+      ctx.fillStyle = brushColor;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      drawings.push({
+        tool: 'fill',
+        color: ctx.fillStyle,
+        startX: 0,
+        startY: 0,
+        width: canvas.width,
+        height: canvas.height
+      });
+    }
+
+    function saveShape() {
+      const endX = event.clientX - canvas.offsetLeft;
+      const endY = event.clientY - canvas.offsetTop;
+      const width = endX - startX;
+      const height = endY - startY;
+
+      drawings.push({
+        tool: tool,
+        color: brushColor,
+        size: brushSize,
+        startX: startX,
+        startY: startY,
+        endX: endX,
+        endY: endY
+      });
+    }
+
+    // Redraw the stored drawings on canvas
+    function redrawCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      drawings.forEach(draw => {
+        ctx.strokeStyle = draw.color;
+        ctx.lineWidth = draw.size;
+
+        if (draw.tool === 'rectangle') {
+          ctx.strokeRect(draw.startX, draw.startY, draw.endX - draw.startX, draw.endY - draw.startY);
+        } else if (draw.tool === 'circle') {
+          ctx.beginPath();
+          ctx.arc(draw.startX, draw.startY, Math.abs(draw.endX - draw.startX), 0, Math.PI * 2);
+          ctx.stroke();
+        } else if (draw.tool === 'line') {
+          ctx.beginPath();
+          ctx.moveTo(draw.startX, draw.startY);
+          ctx.lineTo(draw.endX, draw.endY);
+          ctx.stroke();
+        } else if (draw.tool === 'text') {
+          let fontStyle = '';
+          if (draw.bold) fontStyle += 'bold ';
+          if (draw.italic) fontStyle += 'italic ';
+          if (draw.underline) fontStyle += 'underline ';
+          if (draw.strikethrough) {
+            ctx.strokeStyle = "#FFFFFF"; // White for strikethrough
+            ctx.lineWidth = 2; // Strikethrough width
+            ctx.beginPath();
+            ctx.moveTo(draw.startX, draw.startY - (draw.size / 4));
+            ctx.lineTo(draw.startX + ctx.measureText(draw.text).width, draw.startY - (draw.size / 4));
+            ctx.stroke();
+          }
+
+          ctx.font = `${fontStyle}${draw.size}px ${draw.family}`;
+          ctx.fillStyle = draw.color;
+          ctx.fillText(draw.text, draw.startX, draw.startY);
+        }
+      });
+    }
+
+    // Event listeners for tool buttons
+    document.getElementById('toolPencil').addEventListener('click', () => activateTool('pencil'));
+    document.getElementById('toolEraser').addEventListener('click', () => activateTool('eraser'));
+    document.getElementById('toolFill').addEventListener('click', () => activateTool('fill'));
+    document.getElementById('toolRectangle').addEventListener('click', () => activateTool('rectangle'));
+    document.getElementById('toolCircle').addEventListener('click', () => activateTool('circle'));
+    document.getElementById('toolLine').addEventListener('click', () => activateTool('line'));
+    document.getElementById('toolText').addEventListener('click', () => activateTool('text'));
+
+    // Text formatting event listeners
+    document.getElementById('fontSize').addEventListener('change', (e) => {
+      textOptions.size = e.target.value;
+    });
+
+    document.getElementById('fontFamily').addEventListener('change', (e) => {
+      textOptions.family = e.target.value;
+    });
+
+    document.getElementById('bold').addEventListener('change', (e) => {
+      textOptions.bold = e.target.checked;
+    });
+
+    document.getElementById('italic').addEventListener('change', (e) => {
+      textOptions.italic = e.target.checked;
+    });
+
+    document.getElementById('underline').addEventListener('change', (e) => {
+      textOptions.underline = e.target.checked;
+    });
+
+    document.getElementById('strikethrough').addEventListener('change', (e) => {
+      textOptions.strikethrough = e.target.checked;
+    });
+
+    document.getElementById('confirmText').addEventListener('click', () => {
+      const text = prompt("Enter your text:");
+      if (text) {
+        ctx.font = `${textOptions.bold ? 'bold ' : ''}${textOptions.italic ? 'italic ' : ''}${textOptions.size}px ${textOptions.family}`;
+        ctx.fillStyle = brushColor; // Use the selected color for text
+        ctx.fillText(text, startX, startY); // Draw text on canvas
+
+        // Save the text drawing
+        drawings.push({
+          tool: 'text',
+          color: brushColor,
+          size: textOptions.size,
+          family: textOptions.family,
+          bold: textOptions.bold,
+          italic: textOptions.italic,
+          underline: textOptions.underline,
+          strikethrough: textOptions.strikethrough,
+          text: text,
+          startX: startX,
+          startY: startY
+        });
+        
+        document.getElementById('textFormatContainer').style.display = 'none'; // Hide the container after confirming
+      }
+    });
+
+    // Clear canvas button
+    document.getElementById('clearButton').addEventListener('click', () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawings.length = 0; // Clear drawings array
+    });
+
+    // Event listeners for mouse actions
+    canvas.addEventListener('mousedown', startDrawing);
+    canvas.addEventListener('mouseup', stopDrawing);
+    canvas.addEventListener('mousemove', draw);
+
+    // Update brush color and size
+    document.getElementById('colorPicker').addEventListener('input', (e) => {
+      brushColor = e.target.value;
+    });
+
+    document.getElementById('brushSize').addEventListener('input', (e) => {
+      brushSize = e.target.value;
+    });
+
+    // Initial draw call to load previous drawings
+    redrawCanvas();
+  </script>
+      <footer>
+        <div class="row">
+                <div class="col">
+                    <img src="pm2.png" class="log" alt="logo">
+                    <p>Our mission is to bridge the gap between juniors and seniors by offering a unique mentorship experience across a variety of subjects, including coding, academic guidance, career advice, and personal growth.</p>
+                </div>
+                <div class="col">
+                    <h3>Contact <div class="underline"><span></span></div></h3>
+                    <p class="email-id">promentor97@gmail.com</p>
+                    <h4>+91 94788 41703</h4>
+                    <h4>+91 98888 13038</h4>
+                </div>
+                <div class="col">
+                    <h3>Links <div class="underline"><span></span></div></h3>
+                    <ul class="foot">
+                        <li><a href="index1.html">Home</a></li>
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="project.html">Projects</a></li>
+                        <li><a href="feedback.html">Feedback</a></li>
+                        <li><a href="contact.html">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="col">
+                    <h3>Join Us at <div class="underline"><span></span></div></h3><br>
+
+                    <div class="social-icons">
+                        <i class="fa-brands fa-facebook-f"></i>
+                        <i class="fa-brands fa-twitter"></i>
+                        <i class="fa-brands fa-instagram"></i>
+                        <i class="fa-brands fa-youtube"></i>
+                    </div>
+                </div>
+        </div>
+        <hr class="copy">
+        <p class="copyright">Promentor © 2024 - All  Right Reserved</p>
+    </footer>
+</body>
+</html>

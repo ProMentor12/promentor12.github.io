@@ -354,7 +354,7 @@ span{
               const result = await signInWithPopup(auth, provider);
               const user = result.user;
               console.log("User logged in with Google:", user.email);
-              window.location.href = "index.html";
+              window.location.href = "index1.html";
           } catch (error) {
               alert(`Error: ${error.message}`);
           }
@@ -367,7 +367,7 @@ span{
               const result = await signInWithPopup(auth, provider);
               const user = result.user;
               console.log("User logged in with Apple:", user.email);
-              window.location.href = "index.html";
+              window.location.href = "index1.html";
           } catch (error) {
               alert(`Error: ${error.message}`);
           }
@@ -383,7 +383,7 @@ span{
               const userCredential = await signInWithEmailAndPassword(auth, email, password);
               const user = userCredential.user;
               console.log("User logged in:", user.email);
-              window.location.href = "index.html";
+              window.location.href = "index1.html";
           } catch (error) {
               alert(`Error: ${error.message}`);
           }
