@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://kit.fontawesome.com/5702639677.js"></script>
+        <title>Promentor</title>
+    
+        <style media="screen">
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    body{
+      min-height: 100vh;
+      overflow-x: hidden;
+      background: rgb(5,32,49);
+      background: linear-gradient(90deg, rgba(5,32,49,1) 0%, rgba(122,193,186,1) 67%, rgba(95,193,190,1) 100%);
+    }
+    ::-webkit-scrollbar{
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track{
+      background-image: linear-gradient(to right, rgba(204, 203, 203, 0.863), #f7f7f7);
+    }
+    ::-webkit-scrollbar-thumb{
+      background: linear-gradient(rgb(40, 69, 196), rgb(119, 119, 119));
+    }
+    ::-webkit-scrollbar-thumb:hover{
+      background: linear-gradient(rgb(88, 111, 212), rgb(165, 164, 164));
+    }        
+    header{
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 30px 100px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+      margin-top: -20px;  
+    }
+    .logo{
+      width: 8em;
+    
+    }
+    .navigation a {
+      position: relative;
+      font-size: 1.1em;
+      color: #fff;
+      font-weight: 600;
+      text-decoration: none;
+      margin-left: 20px;
+      padding: 6px 10px;      transition: .5s;
+    }
+    .navigation a:hover,
+    .navigation a.active{
+      color: #333;
+    }
+    .navigation a span {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #fff;
+      border-radius: 30px;
+      z-index: -1;
+      transform: scale(0);
+      opacity: 0;
+      transition: .5s;
+    }
+    .navigation a:hover span,
+    .navigation a.active span{
+      transform: scale(1);
+      opacity: 1;
+    }
+    
+    h2{
+        font-size: 3em;
+            margin-top: 110px;
+            color: #ffffff;
+            text-shadow: 2px 4px 5px #1b283a;
+            position: relative  ;
+            text-align: center;
+}
+
+        .workshop-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .workshop-card {
+            background-image: linear-gradient(rgba(150, 150, 150, 0.295), rgba(150, 150, 150, 0.295));
+  background-position: center;
+  background-repeat: no-repeat;
+  box-shadow: 1px 1px 10px rgba(1, 1, 1, 0.4);           
+            border-radius: 10px;
+            width: 300px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .workshop-card:hover {
+            transform: scale(1.05);
+        }
+
+        .workshop-title {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .workshop-description {
+            font-size: 0.9rem;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .workshop-details {
+            text-align: left;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .workshop-details strong {
+            color: #333;
+        }
+
+        .join-btn {
+            background: linear-gradient(to right, rgb(40, 69, 196), rgb(119, 119, 119));
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 30px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .workshop-card {
+                width: 100%;
+            }
+        }
+        footer{
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+        background: rgba(5, 32, 49, 0);
+        background: linear-gradient(to bottom, rgb(5, 32, 49) 0%, rgb(19, 104, 96) 67%, rgb(16, 235, 228) 100%);
+        color: #fff;
+        padding: 40px 0px 5px;
+        border-top-left-radius: 50px;
+        border-bottom-right-radius: 50px;
+        font-size: 13px;
+        line-height: 20px;
+        position: relative;
+    }
+    .row{
+        width: 85%;
+        margin: auto;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        justify-content: space-between;
+    }
+    .col{
+        flex-basis: 25%;
+        padding: 10px;
+    }
+    .col:nth-child(2), .col:nth-child(3){
+        flex-basis: 15%;
+
+    }
+    .log{
+        width: 80px;
+        margin-bottom: 10px;
+    }
+    .col h3{
+        width: fit-content;
+        margin-bottom: 20px;
+        position: relative;
+    }
+    .email-id{
+        width: fit-content;
+        border-bottom: 1px solid #ccc;
+        margin: 20px 0px;
+    }
+    .foot li{
+        list-style: none;
+        margin-bottom: 2px;
+    }
+    .foot li a{
+        text-decoration: none;
+        color: #fff;
+    }
+
+    .social-icons .fa-brands{
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 40px;
+        font-size: 20px;
+        color: #000;
+        background: #fff;
+        margin-right: 15px;
+        cursor: pointer;
+        
+    }
+    .copy{
+        width: 90%;
+        border: 0;
+        border-bottom: 1px solid #ccc;
+        margin: 20px auto;
+    }
+    .copyright{
+        text-align: center;
+    }
+    .underline{
+        width: 100%;
+        height: 5px;
+        background: #767676;
+        border-radius: 3px;
+        position: absolute;
+        top: 25px;
+        left: 0;
+        overflow: hidden;
+    }
+    .underline span{
+        width: 25px;
+        height: 100%;
+        background: linear-gradient(to right, rgb(40, 69, 196), rgb(119, 119, 119));
+        border-radius: 3px;
+        position: absolute;
+        top: 0;
+        left: 10px;  
+        animation: moving 2s linear infinite;  
+    }
+    @keyframes moving{
+        0%{
+            left: -20px;
+        }
+        100%{
+            left: 100%;
+        }
+    }
+    @media (max-width: 700px){
+        footer{
+            bottom: unset;
+        }
+        .col{
+        flex-basis: 100%;
+    }
+    .col:nth-child(2), .col:nth-child(3){
+        flex-basis: 100%;
+
+    }
+    }
+    @media only screen and (max-width: 768px) {
+  header {
+    padding: 20px;
+    flex-direction: column;
+    align-items: center;
+  }
+  .logo {
+    width: 5em;
+  }
+  .navigation {
+    flex-direction: column;
+    align-items: center;
+  }
+  .navigation a {
+    margin-left: 0;
+    padding: 10px;
+    font-size: 1em;
+  }
+  .navigation a span {
+    display: none;
+  }
+}
+@media only screen and (max-width: 768px) {
+  .navigation a {
+    margin-bottom: 20px; /* Add this line */
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  header {
+    padding: 10px;
+  }
+  .logo {
+    width: 3em;
+  }
+  .navigation a {
+    font-size: 0.8em;
+  }
+}
+    </style>
+</head>
+<body>
+    <header>
+        <img src="pm2.png" class="logo">
+        <nav class="navigation">
+            <a href="index1.html">HOME<span></span></a>
+            <a href="about.html">About<span></span></a>
+            <a href="mentors.html">Mentor<span></span></a>
+            <a href="project.html">Projects<span></span></a>
+            <a href="resource.html">Resources<span></span></a>
+            <a href="workshop.html" class="active">Workshops<span></span></a>
+            <a href="feedback.html">Feedback<span></span></a>
+            <a href="contact.html">Contact Us<span></span></a>
+            <a href="profile.html"><i class="fa-regular fa-user"></i></a>
+        </nav>
+          </header>
+    <h2>Promentor Workshops</h2>
+
+    <div class="workshop-container">
+        <!-- Workshop 1 -->
+        <div class="workshop-card">
+            <div class="workshop-title">Intro to Python Programming</div>
+            <div class="workshop-description">A beginner-level workshop covering Python programming basics, including variables, loops, and functions.</div>
+            <div class="workshop-details">
+                <strong>Duration:</strong> 2 hours<br>
+                <strong>Audience:</strong> Junior students<br>
+                <strong>Format:</strong> Live coding demo <br>
+                <strong>Schedule:</strong> 9:30 AM to 11:30 AM
+            </div>
+            <a href="https://meet.google.com/tks-gpqa-ers" target="_blank" class="join-btn">Join Now</a>
+        </div>
+
+        <!-- Workshop 2 -->
+        <div class="workshop-card">
+            <div class="workshop-title">Web Development for Beginners</div>
+            <div class="workshop-description">Learn how to create a basic website using HTML, CSS, and JavaScript. Perfect for beginners.</div>
+            <div class="workshop-details">
+                <strong>Duration:</strong> 3 hours<br>
+                <strong>Audience:</strong> Junior students<br>
+                <strong>Format:</strong> Live step-by-step tutorial <br>
+                <strong>Schedule:</strong> 9:30 AM to 12:30 PM
+            </div>
+            <a href="https://meet.google.com/tks-gpqa-ers" target="_blank" class="join-btn">Join Now</a>
+        </div>
+
+        <!-- Workshop 3 -->
+        <div class="workshop-card">
+            <div class="workshop-title">Problem-Solving with Algorithms</div>
+            <div class="workshop-description">Intermediate workshop focusing on algorithms and data structures like sorting, searching, and recursion.</div>
+            <div class="workshop-details">
+                <strong>Duration:</strong> 2.5 hours<br>
+                <strong>Audience:</strong> Intermediate students<br>
+                <strong>Format:</strong> Live problem-solving <br>
+                <strong>Schedule:</strong> 9:30 AM to 12:00 PM
+
+            </div>
+            <a href="https://meet.google.com/tks-gpqa-ers" target="_blank" class="join-btn">Join Now</a>
+        </div>
+
+        <!-- Workshop 4 -->
+        <div class="workshop-card">
+            <div class="workshop-title">Intro to Game Development</div>
+            <div class="workshop-description">Build a simple 2D game using Unity. A beginner's workshop for students interested in game development.</div>
+            <div class="workshop-details">
+                <strong>Duration:</strong> 3 hours<br>
+                <strong>Audience:</strong> Junior students<br>
+                <strong>Format:</strong> Live game development tutorial <br>
+                <strong>Schedule:</strong> 9:30 AM to 12:30 PM
+
+            </div>
+            <a href="https://meet.google.com/tks-gpqa-ers" target="_blank" class="join-btn">Join Now</a>
+        </div>
+
+        <!-- Workshop 5 -->
+        <div class="workshop-card">
+            <div class="workshop-title">Building Interactive Websites</div>
+            <div class="workshop-description">Learn how to add interactivity to websites using JavaScript. Suitable for students with basic HTML/CSS knowledge.</div>
+            <div class="workshop-details">
+                <strong>Duration:</strong> 2 hours<br>
+                <strong>Audience:</strong> Junior students<br>
+                <strong>Format:</strong> Interactive live session <br>
+                <strong>Schedule:</strong> 9:30 AM to 11:30 AM
+            </div>
+            <a href="https://meet.google.com/tks-gpqa-ers" target="_blank" class="join-btn">Join Now</a>
+        </div>
+
+        <!-- Workshop 6 -->
+        <div class="workshop-card">
+            <div class="workshop-title">Introduction to Machine Learning</div>
+            <div class="workshop-description">An introductory workshop on machine learning using Python and Scikit-learn for beginners.</div>
+            <div class="workshop-details">
+                <strong>Duration:</strong> 2.5 hours<br>
+                <strong>Audience:</strong> Senior students teaching juniors<br>
+                <strong>Format:</strong> Live coding session <br>
+                <strong>Schedule:</strong> 9:30 AM to 12:00 PM
+            </div>
+            <a href="https://meet.google.com/tks-gpqa-ers" target="_blank" class="join-btn">Join Now</a>
+        </div>
+
+        <!-- Workshop 7 -->
+        <div class="workshop-card">
+            <div class="workshop-title">Version Control with Git and GitHub</div>
+            <div class="workshop-description">Learn how to use Git and GitHub for version control and collaboration in coding projects.</div>
+            <div class="workshop-details">
+                <strong>Duration:</strong> 1.5 hours<br>
+                <strong>Audience:</strong> Junior students<br>
+                <strong>Format:</strong> Live demonstration <br>
+                <strong>Schedule:</strong> 9:30 AM to 11:00 AM
+            </div>
+            <a href="https://meet.google.com/tks-gpqa-ers" target="_blank" class="join-btn">Join Now</a>
+        </div>
+    </div>
+    <footer>
+        <div class="row">
+                <div class="col">
+                    <img src="pm2.png" class="log" alt="logo">
+                    <p>Our mission is to bridge the gap between juniors and seniors by offering a unique mentorship experience across a variety of subjects, including coding, academic guidance, career advice, and personal growth.</p>
+                </div>
+                <div class="col">
+                    <h3>Contact <div class="underline"><span></span></div></h3>
+                    <p class="email-id">promentor97@gmail.com</p>
+                    <h4>+91 94788 41703</h4>
+                    <h4>+91 98888 13038</h4>
+                </div>
+                <div class="col">
+                    <h3>Links <div class="underline"><span></span></div></h3>
+                    <ul class="foot">
+                        <li><a href="index1.html">Home</a></li>
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="project.html">Projects</a></li>
+                        <li><a href="feedback.html">Feedback</a></li>
+                        <li><a href="contact.html">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="col">
+                    <h3>Join Us at <div class="underline"><span></span></div></h3><br>
+
+                    <div class="social-icons">
+                        <a href="https://www.facebook.com/profile.php?id=61568009511872"><i class="fa-brands fa-facebook-f"></i></a>
+                          <a href="https://x.com/promentor138583"> <i class="fa-brands fa-twitter"></i></a>
+                            <a href="https://www.instagram.com/promentor97?igsh=MWhmamJ5d2NsYnVrMQ%3D%3D" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+                            <a href="https://www.youtube.com/@promentor-n9l"><i class="fa-brands fa-youtube"></i></a>
+                        </div>
+                </div>
+        </div>
+        <hr class="copy">
+        <p class="copyright">Promentor © 2024 - All  Right Reserved</p>
+    </footer>
+    <script>
+        // Disable right-click
+      document.addEventListener('contextmenu', (e) => e.preventDefault());
+      
+      function ctrlShiftKey(e, keyCode) {
+        return e.ctrlKey && e.shiftKey && e.keyCode === keyCode.charCodeAt(0);
+      }
+      
+      document.onkeydown = (e) => {
+        // Disable F12, Ctrl + Shift + I, Ctrl + Shift + J, Ctrl + U
+        if (
+          event.keyCode === 123 ||
+          ctrlShiftKey(e, 'I') ||
+          ctrlShiftKey(e, 'J') ||
+          ctrlShiftKey(e, 'C') ||
+          (e.ctrlKey && e.keyCode === 'U'.charCodeAt(0))
+        )
+          return false;
+      };
+      </script>
+      
+</body>
+</html>
