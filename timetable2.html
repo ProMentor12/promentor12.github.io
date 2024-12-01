@@ -35,6 +35,7 @@
         justify-content: space-evenly;
         align-items: center;
         margin-bottom: 20px;
+        flex-wrap: wrap; /* Ensure buttons wrap on smaller screens */
       }
       .teacher-list {
         margin: 20px auto;
@@ -97,18 +98,67 @@
         bottom: 10px;
         right: 10px;
         font-size: 14px;
-        color: #ffffff; /* Change this to your preferred color */
+        color: #ffffff;
         padding: 5px;
         border-radius: 5px;
       }
-
       .powered-by a {
-        color: #ffffff; /* Link color */
+        color: #ffffff;
         text-decoration: none;
       }
-
       .powered-by a:hover {
         text-decoration: underline;
+      }
+
+      /* Responsive Styles */
+      @media screen and (max-width: 768px) {
+        h1 {
+          font-size: 30px;
+        }
+
+        .file-buttons-container {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .teacher-list {
+          max-width: 100%;
+          padding: 10px;
+        }
+
+        .teacher-item {
+          flex: 1 1 45%; /* On smaller screens, items take 45% width */
+        }
+
+        button {
+          font-size: 14px;
+          padding: 8px 16px;
+        }
+
+        .powered-by {
+          bottom: 20px; /* Slightly lower on smaller screens */
+          right: 20px; /* A bit more spaced out */
+        }
+      }
+
+      @media screen and (max-width: 480px) {
+        h1 {
+          font-size: 24px; /* Smaller font size for very small screens */
+        }
+
+        .teacher-item {
+          flex: 1 1 100%; /* Teacher items will take 100% width on very small screens */
+        }
+
+        button {
+          width: 100%; /* Full width buttons on small screens */
+        }
+
+        .powered-by {
+          font-size: 12px; /* Smaller font size for the powered by section */
+          bottom: 10px; /* Even lower on small screens */
+          right: 10px;
+        }
       }
     </style>
   </head>
@@ -199,7 +249,7 @@
         Object.keys(timetable).forEach((teacher) => {
           const div = document.createElement("div");
           div.className = "teacher-item";
-          div.innerHTML = `
+          div.innerHTML = ` 
                     <input type="checkbox" id="${teacher}" />
                     <label for="${teacher}">${teacher}</label>
                 `;
