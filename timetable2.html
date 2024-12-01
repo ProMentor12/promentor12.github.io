@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Teacher Absence Adjustment</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+        color: #ffffff;
+      }
+      h1 {
+        text-align: center;
+        font-size: 40px;
+        text-shadow: 2px 4px 5px #1b283a;
+      }
+      #day {
+        display: block;
+        margin: 20px auto;
+        padding: 10px 5px;
+        font-size: 16px;
+        color: #ccc;
+        background-color: #333;
+        border: none;
+        outline: none;
+        border-radius: 5px;
+      }
+      #day:hover {
+        background-color: #5e5c5c;
+      }
+      .file-buttons-container {
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+      .teacher-list {
+        margin: 20px auto;
+        padding: 20px;
+        background: #f9f9f9;
+        color: #000;
+        border-radius: 8px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+        max-width: 800px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+      .teacher-item {
+        flex: 1 1 30%; /* Each teacher item takes 30% width */
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+      .teacher-item label {
+        margin-left: 10px;
+      }
+      .output {
+        margin: 20px auto;
+        padding: 20px;
+        background: #f9f9f9;
+        color: #000;
+        border-radius: 8px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+        max-width: 800px;
+      }
+      button {
+        display: inline-block;
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #333;
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+      }
+      button:hover {
+        background-color: #5e5c5c;
+      }
+      div.file-input {
+        text-align: center;
+        font-size: 16px;
+        margin-bottom: 20px;
+      }
+      #file-input {
+        display: none;
+      }
+      #file-name {
+        margin-left: 10px;
+        font-size: 16px;
+        color: #ccc;
+      }
+      .powered-by {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        font-size: 14px;
+        color: #ffffff; /* Change this to your preferred color */
+        padding: 5px;
+        border-radius: 5px;
+      }
+
+      .powered-by a {
+        color: #ffffff; /* Link color */
+        text-decoration: none;
+      }
+
+      .powered-by a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Teacher Absence Adjustment</h1>
+
+    <div class="file-input">
+      <button id="custom-file-btn">Choose File</button>
+      <input type="file" id="file-input" accept=".txt" />
+      <span id="file-name">No file chosen</span>
+    </div>
+
+    <div class="file-buttons-container">
+      <div class="day-selection">
+        <select id="day">
+          <option value="Monday">Monday</option>
+          <option value="Tuesday">Tuesday</option>
+          <option value="Wednesday">Wednesday</option>
+          <option value="Thursday">Thursday</option>
+          <option value="Friday">Friday</option>
+          <option value="Saturday">Saturday</option>
+        </select>
+      </div>
+      <button id="submit-btn" disabled>Submit</button>
+    </div>
+    <div class="powered-by">
+      Powered by
+      <a href="https://www.rankmaster.com" target="_blank">RankMaster</a>
+    </div>
+
+    <!-- Teacher List Section -->
+    <div class="teacher-list" id="teacher-list">
+      <!-- Teachers will be dynamically added here -->
+    </div>
+
+    <!-- Adjustments Output Section -->
+    <div class="output" id="output">
+      <!-- Adjustments will be displayed here -->
+    </div>
+
+    <script>
+      let timetable = {};
+      const teacherListDiv = document.getElementById("teacher-list");
+      const submitButton = document.getElementById("submit-btn");
+
+      // Custom file input handling
+      document
+        .getElementById("custom-file-btn")
+        .addEventListener("click", () => {
+          document.getElementById("file-input").click(); // Trigger the file input click
+        });
+
+      document
+        .getElementById("file-input")
+        .addEventListener("change", (event) => {
+          const fileName = event.target.files[0]?.name || "No file chosen";
+          document.getElementById("file-name").textContent = fileName; // Update file name
+        });
+
+      // Parse timetable data from the text file
+      function parseTimetableData(data) {
+        const parsedData = {};
+        const teacherBlocks = data.split("Teacher: ").slice(1); // Split by "Teacher:" to get individual blocks
+        teacherBlocks.forEach((block) => {
+          const lines = block.trim().split("\n");
+          const teacherName = lines[0].trim(); // First line is the teacher's name
+          const periods = {};
+          lines.slice(2).forEach((line) => {
+            const match = line.match(/Period (\d+): (.+)/);
+            if (match) {
+              const period = match[1];
+              const details = match[2];
+              const dayMatch = details.match(
+                /(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday)/g
+              );
+              const days = dayMatch ? dayMatch : ["All"];
+              periods[period] = { details, days };
+            }
+          });
+          parsedData[teacherName] = periods;
+        });
+        return parsedData;
+      }
+
+      // Display teachers dynamically in columns
+      function displayTeachers(timetable) {
+        teacherListDiv.innerHTML = ""; // Clear existing list
+        Object.keys(timetable).forEach((teacher) => {
+          const div = document.createElement("div");
+          div.className = "teacher-item";
+          div.innerHTML = `
+                    <input type="checkbox" id="${teacher}" />
+                    <label for="${teacher}">${teacher}</label>
+                `;
+          teacherListDiv.appendChild(div);
+        });
+        submitButton.disabled = false; // Enable submit button
+      }
+
+      // Handle file input
+      document
+        .getElementById("file-input")
+        .addEventListener("change", (event) => {
+          const file = event.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = () => {
+              timetable = parseTimetableData(reader.result);
+              displayTeachers(timetable);
+            };
+            reader.readAsText(file);
+          }
+        });
+
+      // Handle submit button click
+      submitButton.addEventListener("click", () => {
+        const selectedDay = document.getElementById("day").value;
+        const selectedTeachers = [];
+        Object.keys(timetable).forEach((teacher) => {
+          const checkbox = document.getElementById(teacher);
+          if (checkbox.checked) {
+            selectedTeachers.push(teacher);
+          }
+        });
+
+        if (selectedTeachers.length === 0) {
+          alert("Please select at least one teacher as absent.");
+          return;
+        }
+
+        // Perform adjustments
+        const adjustments = {};
+        const availableTeachers = Object.keys(timetable).filter(
+          (teacher) => !selectedTeachers.includes(teacher)
+        );
+
+        selectedTeachers.forEach((absentTeacher) => {
+          adjustments[absentTeacher] = {};
+          const schedule = timetable[absentTeacher];
+          Object.keys(schedule).forEach((period) => {
+            const { details, days } = schedule[period];
+            if (
+              details === "Free Period" ||
+              (!days.includes(selectedDay) && !days.includes("All"))
+            ) {
+              return; // Skip free or non-applicable periods
+            }
+
+            // Try to find a replacement
+            let replacementFound = false;
+            for (const availableTeacher of availableTeachers) {
+              const availableSchedule = timetable[availableTeacher];
+              if (
+                availableSchedule[period] &&
+                availableSchedule[period].details === "Free Period"
+              ) {
+                adjustments[absentTeacher][
+                  period
+                ] = `${details} replaced with ${availableTeacher}`;
+                replacementFound = true;
+                break;
+              }
+            }
+
+            if (!replacementFound) {
+              adjustments[absentTeacher][
+                period
+              ] = `${details} - No replacement available`;
+            }
+          });
+        });
+
+        // Display adjustments
+        const outputDiv = document.getElementById("output");
+        outputDiv.innerHTML = "<h2>Adjustments</h2>";
+        Object.keys(adjustments).forEach((absentTeacher) => {
+          const periods = adjustments[absentTeacher];
+          outputDiv.innerHTML += `<h3>${absentTeacher}</h3>`;
+          Object.keys(periods).forEach((period) => {
+            outputDiv.innerHTML += `<p>Period ${period}: ${periods[period]}</p>`;
+          });
+        });
+      });
+      // Scroll to the adjustments output section when the submit button is clicked
+      submitButton.addEventListener("click", () => {
+        const selectedDay = document.getElementById("day").value;
+        const selectedTeachers = [];
+        Object.keys(timetable).forEach((teacher) => {
+          const checkbox = document.getElementById(teacher);
+          if (checkbox.checked) {
+            selectedTeachers.push(teacher);
+          }
+        });
+
+        if (selectedTeachers.length === 0) {
+          alert("Please select at least one teacher as absent.");
+          return;
+        }
+
+        // Perform adjustments and display them (existing logic)
+
+        // Scroll to the adjustments output section smoothly
+        document.getElementById("output").scrollIntoView({
+          behavior: "smooth", // Smooth scrolling
+          block: "start", // Align the top of the section to the top of the viewport
+        });
+      });
+    </script>
+  </body>
+</html>
