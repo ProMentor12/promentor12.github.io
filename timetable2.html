@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Teacher Absence Adjustment</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -198,33 +200,34 @@
     <div class="output" id="output">
       <!-- Adjustments will be displayed here -->
     </div>
+    <button id="export-btn" disabled>Export to Excel</button>
 
     <script>
       let timetable = {};
       const teacherListDiv = document.getElementById("teacher-list");
       const submitButton = document.getElementById("submit-btn");
+      const exportButton = document.getElementById("export-btn");
 
-      // Custom file input handling
       document
         .getElementById("custom-file-btn")
         .addEventListener("click", () => {
-          document.getElementById("file-input").click(); // Trigger the file input click
+          document.getElementById("file-input").click();
         });
 
       document
         .getElementById("file-input")
         .addEventListener("change", (event) => {
           const fileName = event.target.files[0]?.name || "No file chosen";
-          document.getElementById("file-name").textContent = fileName; // Update file name
+          document.getElementById("file-name").textContent = fileName;
         });
 
       // Parse timetable data from the text file
       function parseTimetableData(data) {
         const parsedData = {};
-        const teacherBlocks = data.split("Teacher: ").slice(1); // Split by "Teacher:" to get individual blocks
+        const teacherBlocks = data.split("Teacher: ").slice(1);
         teacherBlocks.forEach((block) => {
           const lines = block.trim().split("\n");
-          const teacherName = lines[0].trim(); // First line is the teacher's name
+          const teacherName = lines[0].trim();
           const periods = {};
           lines.slice(2).forEach((line) => {
             const match = line.match(/Period (\d+): (.+)/);
@@ -243,22 +246,20 @@
         return parsedData;
       }
 
-      // Display teachers dynamically in columns
       function displayTeachers(timetable) {
-        teacherListDiv.innerHTML = ""; // Clear existing list
+        teacherListDiv.innerHTML = "";
         Object.keys(timetable).forEach((teacher) => {
           const div = document.createElement("div");
           div.className = "teacher-item";
-          div.innerHTML = ` 
-              <input type="checkbox" id="${teacher}" />
-              <label for="${teacher}">${teacher}</label>
-          `;
+          div.innerHTML = `
+      <input type="checkbox" id="${teacher}" />
+      <label for="${teacher}">${teacher}</label>
+    `;
           teacherListDiv.appendChild(div);
         });
-        submitButton.disabled = false; // Enable submit button
+        submitButton.disabled = false;
       }
 
-      // Handle file input
       document
         .getElementById("file-input")
         .addEventListener("change", (event) => {
@@ -273,17 +274,13 @@
           }
         });
 
-      // Randomize array elements
       function getRandomizedArray(array) {
         return array.sort(() => Math.random() - 0.5);
       }
 
-      // Handle submit button click
       submitButton.addEventListener("click", () => {
         const selectedDay = document.getElementById("day").value;
         const selectedTeachers = [];
-
-        // Collect selected absent teachers
         Object.keys(timetable).forEach((teacher) => {
           const checkbox = document.getElementById(teacher);
           if (checkbox.checked) {
@@ -296,10 +293,9 @@
           return;
         }
 
-        // Create a structure to track availability of teachers
         const teacherAvailability = {};
         Object.keys(timetable).forEach((teacher) => {
-          teacherAvailability[teacher] = {}; // Initialize availability
+          teacherAvailability[teacher] = {};
           const schedule = timetable[teacher];
           Object.keys(schedule).forEach((period) => {
             const { details, days } = schedule[period];
@@ -309,24 +305,18 @@
           });
         });
 
-        const adjustments = {};
-
-        // Loop through each absent teacher
+        const adjustments = [];
         selectedTeachers.forEach((absentTeacher) => {
-          adjustments[absentTeacher] = {};
           const schedule = timetable[absentTeacher];
-
-          // Loop through each period of the absent teacher
           Object.keys(schedule).forEach((period) => {
             const { details, days } = schedule[period];
             if (
               details === "Free Period" ||
               (!days.includes(selectedDay) && !days.includes("All"))
             ) {
-              return; // Skip free or non-applicable periods
+              return;
             }
 
-            // Find randomly available replacement teachers who are not absent
             const availableTeachers = getRandomizedArray(
               Object.keys(teacherAvailability).filter(
                 (teacher) =>
@@ -337,38 +327,73 @@
             );
 
             if (availableTeachers.length > 0) {
-              const replacementTeacher = availableTeachers[0]; // Pick the first teacher from randomized array
-              adjustments[absentTeacher][
-                period
-              ] = `${details} replaced with ${replacementTeacher}`;
-
-              // Mark the replacement teacher as occupied for this period
+              const replacementTeacher = availableTeachers[0];
+              adjustments.push({
+                Teacher: absentTeacher,
+                Period: period,
+                Class: details.split(" ")[0],
+                Replacement: `${
+                  details.split(" ")[0]
+                } ${selectedDay} Replacement ${replacementTeacher}`,
+              });
               teacherAvailability[replacementTeacher][period] = false;
             } else {
-              adjustments[absentTeacher][
-                period
-              ] = `${details} - No replacement available`;
+              adjustments.push({
+                Teacher: absentTeacher,
+                Period: period,
+                Class: details.split(" ")[0],
+                Replacement: `${
+                  details.split(" ")[0]
+                } - No replacement available`,
+              });
             }
           });
         });
 
-        // Display adjustments
         const outputDiv = document.getElementById("output");
         outputDiv.innerHTML = "<h2>Adjustments</h2>";
-        Object.keys(adjustments).forEach((absentTeacher) => {
-          const periods = adjustments[absentTeacher];
-          outputDiv.innerHTML += `<h3>${absentTeacher}</h3>`;
-          Object.keys(periods).forEach((period) => {
-            outputDiv.innerHTML += `<p>Period ${period}: ${periods[period]}</p>`;
-          });
+
+        let currentTeacher = "";
+        adjustments.forEach((adjustment) => {
+          if (adjustment.Teacher !== currentTeacher) {
+            if (currentTeacher) {
+              outputDiv.innerHTML += "<br><br>";
+            }
+            currentTeacher = adjustment.Teacher;
+          }
+          outputDiv.innerHTML += `
+            <p>${adjustment.Teacher} - Period ${adjustment.Period}: ${adjustment.Replacement}</p>
+          `;
         });
 
-        // Scroll to output section
+        exportButton.disabled = false;
+
+        exportButton.onclick = () => {
+          exportToExcel(adjustments);
+        };
+
         outputDiv.scrollIntoView({
           behavior: "smooth",
           block: "start",
         });
       });
+
+      // Export to Excel
+      function exportToExcel(data) {
+        const formattedData = data.map((item) => ({
+          Teacher: item.Teacher,
+          Period: item.Period,
+          Class: item.Class,
+          Replacement: item.Replacement,
+        }));
+
+        const worksheet = XLSX.utils.json_to_sheet(formattedData);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Adjustments");
+
+        // Create the file and download
+        XLSX.writeFile(workbook, "Teacher_Adjustments.xlsx");
+      }
     </script>
   </body>
 </html>
