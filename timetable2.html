@@ -4,15 +4,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Teacher Absence Adjustment</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.9/jspdf.plugin.autotable.min.js"></script>
     <style>
-      body {
-        font-family: Arial, sans-serif;
-        margin: 20px;
-        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-        color: #ffffff;
-      }
+body {
+    margin: 0;
+    height: 100vh;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    background-repeat: repeat;
+    background-size: cover;
+    color: #fff;
+}
+
       h1 {
         text-align: center;
         font-size: 40px;
@@ -185,6 +188,7 @@
         </select>
       </div>
       <button id="submit-btn" disabled>Submit</button>
+      <button id="export-btn" disabled>Export to PDF</button>
     </div>
     <div class="powered-by">
       Powered by
@@ -200,200 +204,225 @@
     <div class="output" id="output">
       <!-- Adjustments will be displayed here -->
     </div>
-    <button id="export-btn" disabled>Export to Excel</button>
 
     <script>
-      let timetable = {};
-      const teacherListDiv = document.getElementById("teacher-list");
-      const submitButton = document.getElementById("submit-btn");
-      const exportButton = document.getElementById("export-btn");
+let timetable = {};
+const teacherListDiv = document.getElementById("teacher-list");
+const submitButton = document.getElementById("submit-btn");
+const exportButton = document.getElementById("export-btn");
 
-      document
-        .getElementById("custom-file-btn")
-        .addEventListener("click", () => {
-          document.getElementById("file-input").click();
-        });
+document
+  .getElementById("custom-file-btn")
+  .addEventListener("click", () => {
+    document.getElementById("file-input").click();
+  });
 
-      document
-        .getElementById("file-input")
-        .addEventListener("change", (event) => {
-          const fileName = event.target.files[0]?.name || "No file chosen";
-          document.getElementById("file-name").textContent = fileName;
-        });
+document
+  .getElementById("file-input")
+  .addEventListener("change", (event) => {
+    const fileName = event.target.files[0]?.name || "No file chosen";
+    document.getElementById("file-name").textContent = fileName;
+  });
 
-      // Parse timetable data from the text file
-      function parseTimetableData(data) {
-        const parsedData = {};
-        const teacherBlocks = data.split("Teacher: ").slice(1);
-        teacherBlocks.forEach((block) => {
-          const lines = block.trim().split("\n");
-          const teacherName = lines[0].trim();
-          const periods = {};
-          lines.slice(2).forEach((line) => {
-            const match = line.match(/Period (\d+): (.+)/);
-            if (match) {
-              const period = match[1];
-              const details = match[2];
-              const dayMatch = details.match(
-                /(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday)/g
-              );
-              const days = dayMatch ? dayMatch : ["All"];
-              periods[period] = { details, days };
-            }
-          });
-          parsedData[teacherName] = periods;
-        });
-        return parsedData;
+// Parse timetable data from the text file
+function parseTimetableData(data) {
+  const parsedData = {};
+  const teacherBlocks = data.split("Teacher: ").slice(1);
+  teacherBlocks.forEach((block) => {
+    const lines = block.trim().split("\n");
+    const teacherName = lines[0].trim();
+    const periods = {};
+    lines.slice(2).forEach((line) => {
+      const match = line.match(/Period (\d+): (.+)/);
+      if (match) {
+        const period = match[1];
+        const details = match[2];
+        const dayMatch = details.match(
+          /(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday)/g
+        );
+        const days = dayMatch ? dayMatch : ["All"];
+        periods[period] = { details, days };
+      }
+    });
+    parsedData[teacherName] = periods;
+  });
+  return parsedData;
+}
+
+function displayTeachers(timetable) {
+  teacherListDiv.innerHTML = "";
+  Object.keys(timetable).forEach((teacher) => {
+    const div = document.createElement("div");
+    div.className = "teacher-item";
+    div.innerHTML = `
+    <input type="checkbox" id="${teacher}" />
+    <label for="${teacher}">${teacher}</label>
+  `;
+    teacherListDiv.appendChild(div);
+  });
+  submitButton.disabled = false;
+}
+
+document
+  .getElementById("file-input")
+  .addEventListener("change", (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        timetable = parseTimetableData(reader.result);
+        displayTeachers(timetable);
+      };
+      reader.readAsText(file);
+    }
+  });
+
+function getRandomizedArray(array) {
+  return array.sort(() => Math.random() - 0.5);
+}
+
+submitButton.addEventListener("click", () => {
+  const selectedDay = document.getElementById("day").value;
+  const selectedTeachers = [];
+  Object.keys(timetable).forEach((teacher) => {
+    const checkbox = document.getElementById(teacher);
+    if (checkbox.checked) {
+      selectedTeachers.push(teacher);
+    }
+  });
+
+  if (selectedTeachers.length === 0) {
+    alert("Please select at least one teacher as absent.");
+    return;
+  }
+
+  const teacherAvailability = {};
+  Object.keys(timetable).forEach((teacher) => {
+    teacherAvailability[teacher] = {};
+    const schedule = timetable[teacher];
+    Object.keys(schedule).forEach((period) => {
+      const { details, days } = schedule[period];
+      teacherAvailability[teacher][period] =
+        details === "Free Period" &&
+        (days.includes(selectedDay) || days.includes("All"));
+    });
+  });
+
+  const adjustments = [];
+  selectedTeachers.forEach((absentTeacher) => {
+    const schedule = timetable[absentTeacher];
+    Object.keys(schedule).forEach((period) => {
+      const { details, days } = schedule[period];
+      if (
+        details === "Free Period" ||
+        (!days.includes(selectedDay) && !days.includes("All"))
+      ) {
+        return;
       }
 
-      function displayTeachers(timetable) {
-        teacherListDiv.innerHTML = "";
-        Object.keys(timetable).forEach((teacher) => {
-          const div = document.createElement("div");
-          div.className = "teacher-item";
-          div.innerHTML = `
-      <input type="checkbox" id="${teacher}" />
-      <label for="${teacher}">${teacher}</label>
+      const availableTeachers = getRandomizedArray(
+        Object.keys(teacherAvailability).filter(
+          (teacher) =>
+            teacher !== absentTeacher &&
+            !selectedTeachers.includes(teacher) &&
+            teacherAvailability[teacher][period]
+        )
+      );
+
+      const classSection = details.split(" ")[0]; // Extract the class (e.g., IX) and section (e.g., B)
+      const section = details.split(" ")[1] || ""; // Extract section (if available)
+
+      if (availableTeachers.length > 0) {
+        const replacementTeacher = availableTeachers[0];
+        adjustments.push({
+          Teacher: absentTeacher,
+          Period: period,
+          Class: `${classSection} ${section}`, // Include class and section
+          Replacement: `${classSection} ${section} Replacement ${replacementTeacher}`,
+        });
+        teacherAvailability[replacementTeacher][period] = false;
+      } else {
+        adjustments.push({
+          Teacher: absentTeacher,
+          Period: period,
+          Class: `${classSection} ${section}`, // Include class and section
+          Replacement: `${classSection} ${section} Replacement - No replacement available`,
+        });
+      }
+    });
+  });
+
+  const outputDiv = document.getElementById("output");
+  outputDiv.innerHTML = "<h2>Adjustments</h2>";
+
+  // Create a table for aligned output
+  const table = document.createElement("table");
+  table.style.width = "100%";
+  table.style.borderCollapse = "collapse";
+  table.style.margin = "20px 0";
+
+  // Table Header
+  const thead = document.createElement("thead");
+  thead.innerHTML = `
+    <tr>
+      <th style="border: 1px solid #ccc; padding: 10px; background-color: #ddd;">Teacher</th>
+      <th style="border: 1px solid #ccc; padding: 10px; background-color: #ddd;">Period</th>
+      <th style="border: 1px solid #ccc; padding: 10px; background-color: #ddd;">Class</th>
+      <th style="border: 1px solid #ccc; padding: 10px; background-color: #ddd;">Replacement</th>
+      <th style="border: 1px solid #ccc; padding: 10px; background-color: #ddd;">Teacher Sign</th>
+    </tr>
+  `;
+  table.appendChild(thead);
+
+  // Table Body
+  const tbody = document.createElement("tbody");
+  adjustments.forEach((adjustment) => {
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
+      <td style="border: 1px solid #ccc; padding: 10px;">${adjustment.Teacher}</td>
+      <td style="border: 1px solid #ccc; padding: 10px;">${adjustment.Period}</td>
+      <td style="border: 1px solid #ccc; padding: 10px;">${adjustment.Class}</td> <!-- Class with section -->
+      <td style="border: 1px solid #ccc; padding: 10px;">${adjustment.Replacement.split("Replacement ")[1]}</td>
+      <td style="border: 1px solid #ccc; padding: 10px;"></td> <!-- Empty column for Teacher Sign -->
     `;
-          teacherListDiv.appendChild(div);
-        });
-        submitButton.disabled = false;
-      }
+    tbody.appendChild(row);
+  });
 
-      document
-        .getElementById("file-input")
-        .addEventListener("change", (event) => {
-          const file = event.target.files[0];
-          if (file) {
-            const reader = new FileReader();
-            reader.onload = () => {
-              timetable = parseTimetableData(reader.result);
-              displayTeachers(timetable);
-            };
-            reader.readAsText(file);
-          }
-        });
+  table.appendChild(tbody);
+  outputDiv.innerHTML = ""; // Clear previous content
+  outputDiv.appendChild(table);
 
-      function getRandomizedArray(array) {
-        return array.sort(() => Math.random() - 0.5);
-      }
+  exportButton.disabled = false;
 
-      submitButton.addEventListener("click", () => {
-        const selectedDay = document.getElementById("day").value;
-        const selectedTeachers = [];
-        Object.keys(timetable).forEach((teacher) => {
-          const checkbox = document.getElementById(teacher);
-          if (checkbox.checked) {
-            selectedTeachers.push(teacher);
-          }
-        });
+  exportButton.onclick = () => {
+    const tableElement = document.querySelector("#output table"); // Ensure you select the correct table
+    if (tableElement) {
+      exportToPDF(tableElement); // Pass the table element to the function
+    } else {
+      alert("No adjustments to export!");
+    }
+  };
 
-        if (selectedTeachers.length === 0) {
-          alert("Please select at least one teacher as absent.");
-          return;
-        }
+  outputDiv.scrollIntoView({
+    behavior: "smooth",
+    block: "start",
+  });
+});
 
-        const teacherAvailability = {};
-        Object.keys(timetable).forEach((teacher) => {
-          teacherAvailability[teacher] = {};
-          const schedule = timetable[teacher];
-          Object.keys(schedule).forEach((period) => {
-            const { details, days } = schedule[period];
-            teacherAvailability[teacher][period] =
-              details === "Free Period" &&
-              (days.includes(selectedDay) || days.includes("All"));
-          });
-        });
+// Export to PDF
+function exportToPDF(tableElement) {
+  // Create a new jsPDF instance
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF();
 
-        const adjustments = [];
-        selectedTeachers.forEach((absentTeacher) => {
-          const schedule = timetable[absentTeacher];
-          Object.keys(schedule).forEach((period) => {
-            const { details, days } = schedule[period];
-            if (
-              details === "Free Period" ||
-              (!days.includes(selectedDay) && !days.includes("All"))
-            ) {
-              return;
-            }
+  // Add the table to the PDF
+  pdf.autoTable({ html: tableElement });
 
-            const availableTeachers = getRandomizedArray(
-              Object.keys(teacherAvailability).filter(
-                (teacher) =>
-                  teacher !== absentTeacher &&
-                  !selectedTeachers.includes(teacher) &&
-                  teacherAvailability[teacher][period]
-              )
-            );
+  // Save the generated PDF
+  pdf.save("Teacher_Adjustments.pdf");
+}
 
-            if (availableTeachers.length > 0) {
-              const replacementTeacher = availableTeachers[0];
-              adjustments.push({
-                Teacher: absentTeacher,
-                Period: period,
-                Class: details.split(" ")[0],
-                Replacement: `${
-                  details.split(" ")[0]
-                } ${selectedDay} Replacement ${replacementTeacher}`,
-              });
-              teacherAvailability[replacementTeacher][period] = false;
-            } else {
-              adjustments.push({
-                Teacher: absentTeacher,
-                Period: period,
-                Class: details.split(" ")[0],
-                Replacement: `${
-                  details.split(" ")[0]
-                } - No replacement available`,
-              });
-            }
-          });
-        });
-
-        const outputDiv = document.getElementById("output");
-        outputDiv.innerHTML = "<h2>Adjustments</h2>";
-
-        let currentTeacher = "";
-        adjustments.forEach((adjustment) => {
-          if (adjustment.Teacher !== currentTeacher) {
-            if (currentTeacher) {
-              outputDiv.innerHTML += "<br><br>";
-            }
-            currentTeacher = adjustment.Teacher;
-          }
-          outputDiv.innerHTML += `
-            <p>${adjustment.Teacher} - Period ${adjustment.Period}: ${adjustment.Replacement}</p>
-          `;
-        });
-
-        exportButton.disabled = false;
-
-        exportButton.onclick = () => {
-          exportToExcel(adjustments);
-        };
-
-        outputDiv.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-      });
-
-      // Export to Excel
-      function exportToExcel(data) {
-        const formattedData = data.map((item) => ({
-          Teacher: item.Teacher,
-          Period: item.Period,
-          Class: item.Class,
-          Replacement: item.Replacement,
-        }));
-
-        const worksheet = XLSX.utils.json_to_sheet(formattedData);
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Adjustments");
-
-        // Create the file and download
-        XLSX.writeFile(workbook, "Teacher_Adjustments.xlsx");
-      }
     </script>
   </body>
 </html>
